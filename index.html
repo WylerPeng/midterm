@@ -1,0 +1,1060 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>期中測驗系統</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #f5f2ea;
+        --surface: #fffdf7;
+        --surface-2: #efe9db;
+        --ink: #22261f;
+        --ink-2: #5d6357;
+        --line: #ddd5c2;
+        --accent: #1e5240;
+        --accent-strong: #173f31;
+        --accent-soft: #e2ece4;
+        --on-accent: #ffffff;
+        --warn-bg: #fdf3d8;
+        --warn-ink: #6d5410;
+        --warn-line: #e5cf8d;
+        --danger: #a33327;
+        --danger-bg: #fbeae7;
+        --code-bg: #22261f;
+        --code-ink: #f5d90a;
+        --shadow: 0 1px 3px rgba(34, 38, 31, 0.10), 0 8px 24px rgba(34, 38, 31, 0.06);
+        --accent-2: #2e7d5f;
+        --gold: #c9a227;
+        --banner-bg: #1e5240;
+        --banner-ink: #f4f1e6;
+        --banner-sub: #cfe0d2;
+        --dot: rgba(30, 82, 64, 0.07);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #131613;
+          --surface: #1d211d;
+          --surface-2: #262b26;
+          --ink: #eceade;
+          --ink-2: #a9aea1;
+          --line: #3a4038;
+          --accent: #4fae87;
+          --accent-strong: #6cc49c;
+          --accent-soft: #22392e;
+          --on-accent: #0f1a14;
+          --warn-bg: #38300f;
+          --warn-ink: #ecd28a;
+          --warn-line: #6b5c22;
+          --danger: #f0927f;
+          --danger-bg: #3d2320;
+          --code-bg: #0c0e0c;
+          --code-ink: #f5d90a;
+          --shadow: 0 1px 3px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.3);
+          --accent-2: #7fd1ab;
+          --gold: #d9b84a;
+          --banner-bg: #173f31;
+          --banner-ink: #eef2e6;
+          --banner-sub: #a9c8b4;
+          --dot: rgba(255, 255, 255, 0.05);
+        }
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        background-image: radial-gradient(var(--dot) 1px, transparent 1.4px);
+        background-size: 22px 22px;
+        color: var(--ink);
+        font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+        font-size: 16px;
+        line-height: 1.65;
+      }
+      .wrap {
+        max-width: 660px;
+        margin: 0 auto;
+        padding: 28px 18px calc(40px + env(safe-area-inset-bottom));
+      }
+      h1, h2, h3 { font-family: "Noto Serif TC", "Songti TC", serif; line-height: 1.35; margin: 0; }
+      .course-line {
+        font-size: 0.85rem;
+        letter-spacing: 0.14em;
+        color: var(--ink-2);
+        margin: 0 0 6px;
+      }
+      .page-title { font-size: 1.65rem; font-weight: 900; }
+      .lede { color: var(--ink-2); margin: 10px 0 0; font-size: 0.98rem; }
+      .panel {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        box-shadow: var(--shadow);
+        padding: 22px 20px;
+        margin-top: 22px;
+      }
+      .panel h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 6px; }
+      .panel .sub { color: var(--ink-2); font-size: 0.94rem; margin: 0 0 16px; }
+      label.field { display: block; margin-bottom: 16px; }
+      label.field span {
+        display: block;
+        font-weight: 700;
+        font-size: 0.95rem;
+        margin-bottom: 6px;
+      }
+      label.field input {
+        width: 100%;
+        font: inherit;
+        padding: 13px 14px;
+        border: 1.5px solid var(--line);
+        border-radius: 10px;
+        background: var(--surface);
+        color: var(--ink);
+      }
+      label.field input:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px var(--accent-soft);
+      }
+      label.field input.invalid { border-color: var(--danger); }
+      label.field span.field-error { color: var(--danger); font-size: 0.88rem; font-weight: 400; margin-top: 5px; display: none; }
+      label.field span.field-error.show { display: block; }
+      .btn {
+        appearance: none;
+        border: none;
+        cursor: pointer;
+        font: inherit;
+        font-weight: 700;
+        border-radius: 10px;
+        padding: 14px 22px;
+        background: var(--accent);
+        color: var(--on-accent);
+        width: 100%;
+        font-size: 1.02rem;
+        min-height: 52px;
+      }
+      .btn:active { background: var(--accent-strong); }
+      .btn[disabled] { opacity: 0.55; cursor: wait; }
+      .btn.secondary {
+        background: var(--surface);
+        color: var(--ink);
+        border: 1.5px solid var(--line);
+      }
+      .structure-list { margin: 4px 0 0; padding: 0; list-style: none; }
+      .structure-list li {
+        display: flex;
+        gap: 12px;
+        padding: 10px 0;
+        border-top: 1px dashed var(--line);
+      }
+      .structure-list li:first-child { border-top: none; padding-top: 2px; }
+      .structure-list .pts {
+        flex: 0 0 auto;
+        font-weight: 700;
+        color: var(--accent);
+        min-width: 3.4em;
+      }
+      .structure-list .desc { color: var(--ink); font-size: 0.96rem; }
+      .structure-list .desc small { display: block; color: var(--ink-2); }
+      /* ---- handwriting step ---- */
+      .code-box {
+        background: var(--code-bg);
+        border-radius: 12px;
+        text-align: center;
+        padding: 18px 12px 14px;
+        margin: 14px 0 6px;
+      }
+      .code-box .code-label { color: #b9bcb2; font-size: 0.82rem; letter-spacing: 0.2em; margin: 0; }
+      .code-box .code-value {
+        color: var(--code-ink);
+        font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+        font-size: 2.5rem;
+        font-weight: 700;
+        letter-spacing: 0.32em;
+        margin: 4px 0 2px;
+        padding-left: 0.32em;
+      }
+      .notice {
+        background: var(--warn-bg);
+        border: 1px solid var(--warn-line);
+        color: var(--warn-ink);
+        border-radius: 10px;
+        padding: 12px 14px;
+        font-size: 0.93rem;
+        margin-top: 14px;
+      }
+      .notice strong { font-weight: 700; }
+      .hw-block { margin-top: 22px; }
+      .hw-tag {
+        display: inline-block;
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-weight: 700;
+        font-size: 0.82rem;
+        border-radius: 999px;
+        padding: 3px 12px;
+        margin-bottom: 8px;
+      }
+      .hw-block h3 { font-size: 1.12rem; font-weight: 700; }
+      .hw-block p { margin: 8px 0; font-size: 0.97rem; }
+      .stance-box {
+        border: 1.5px solid var(--accent);
+        border-radius: 10px;
+        padding: 12px 14px;
+        margin-top: 10px;
+        background: var(--accent-soft);
+      }
+      .stance-box .stance-name { font-weight: 700; color: var(--accent); font-size: 1.02rem; }
+      .stance-box p { margin: 4px 0 0; }
+      .req { color: var(--ink-2); font-size: 0.9rem; }
+      .identity-line {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px 18px;
+        color: var(--ink-2);
+        font-size: 0.92rem;
+        margin-top: 4px;
+      }
+      .identity-line b { color: var(--ink); }
+      /* ---- exam step ---- */
+      .exam-head {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background: var(--bg);
+        padding: 14px 0 10px;
+        margin: -6px 0 4px;
+      }
+      .progress-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        font-size: 0.92rem;
+        color: var(--ink-2);
+        margin-bottom: 6px;
+      }
+      .progress-row b { color: var(--ink); font-size: 1rem; }
+      .progress-track {
+        height: 8px;
+        border-radius: 999px;
+        background: var(--surface-2);
+        overflow: hidden;
+      }
+      .progress-fill {
+        height: 100%;
+        width: 0%;
+        background: var(--accent);
+        border-radius: 999px;
+        transition: width 0.25s ease;
+      }
+      .q-card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        box-shadow: var(--shadow);
+        padding: 18px 18px 14px;
+        margin-top: 16px;
+      }
+      .q-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+      .q-num { font-weight: 700; color: var(--accent); font-size: 0.95rem; }
+      .q-type {
+        font-size: 0.78rem;
+        color: var(--ink-2);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 1px 9px;
+      }
+      .q-text { font-size: 1.04rem; font-weight: 500; margin: 0 0 12px; }
+      fieldset { border: none; margin: 0; padding: 0; }
+      legend { padding: 0; }
+      .opt {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        border: 1.5px solid var(--line);
+        border-radius: 10px;
+        padding: 12px 13px;
+        margin-bottom: 9px;
+        cursor: pointer;
+        min-height: 48px;
+      }
+      .opt input { margin-top: 5px; width: 19px; height: 19px; accent-color: var(--accent); flex: 0 0 auto; }
+      .opt span { flex: 1; }
+      .opt:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); }
+      .match-row { margin-bottom: 13px; }
+      .match-row .m-left { font-weight: 500; margin-bottom: 5px; display: block; }
+      .match-row select {
+        width: 100%;
+        font: inherit;
+        padding: 12px 12px;
+        border: 1.5px solid var(--line);
+        border-radius: 10px;
+        background: var(--surface);
+        color: var(--ink);
+        min-height: 50px;
+      }
+      .match-row select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+      .match-row select.filled { border-color: var(--accent); }
+      .submit-zone { margin-top: 26px; }
+      .submit-note { text-align: center; color: var(--ink-2); font-size: 0.9rem; margin-top: 10px; }
+      /* ---- modal ---- */
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(10, 12, 10, 0.55);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        z-index: 50;
+      }
+      .modal {
+        background: var(--surface);
+        color: var(--ink);
+        border-radius: 14px;
+        padding: 24px 22px;
+        max-width: 420px;
+        width: 100%;
+        box-shadow: var(--shadow);
+      }
+      .modal h3 { font-size: 1.15rem; margin-bottom: 8px; }
+      .modal p { margin: 6px 0; font-size: 0.96rem; }
+      .modal .btn-row { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; }
+      /* ---- visual upgrade: banner / stepper / polish ---- */
+      .banner {
+        background: var(--banner-bg);
+        color: var(--banner-ink);
+        border-radius: 18px;
+        padding: 26px 22px 22px;
+        box-shadow: var(--shadow);
+        position: relative;
+        overflow: hidden;
+      }
+      .banner::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 4px;
+        background: var(--gold);
+      }
+      .banner::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: radial-gradient(rgba(255, 255, 255, 0.13) 1.2px, transparent 1.2px);
+        background-size: 18px 18px;
+        opacity: 0.35;
+        pointer-events: none;
+      }
+      .banner > * { position: relative; z-index: 1; }
+      .banner-course {
+        font-size: 0.82rem;
+        letter-spacing: 0.14em;
+        color: var(--banner-sub);
+        margin: 0 0 8px;
+      }
+      .banner-title { font-size: 2rem; font-weight: 900; color: var(--banner-ink); }
+      .banner-lede { color: var(--banner-sub); margin: 10px 0 0; font-size: 0.97rem; }
+      .banner-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        list-style: none;
+        padding: 0;
+        margin: 16px 0 0;
+      }
+      .banner-chips li {
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 999px;
+        padding: 3px 12px;
+        font-size: 0.82rem;
+        color: var(--banner-ink);
+      }
+      .stepper { margin: 4px 0 20px; }
+      .stepper ol {
+        display: flex;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .stepper li {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        position: relative;
+        color: var(--ink-2);
+        font-size: 0.8rem;
+        text-align: center;
+      }
+      .stepper li::before {
+        content: "";
+        position: absolute;
+        top: 15px;
+        left: calc(-50% + 19px);
+        right: calc(50% + 19px);
+        height: 2px;
+        background: var(--line);
+      }
+      .stepper li:first-child::before { display: none; }
+      .stepper li.done::before { background: var(--accent); }
+      .step-dot {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        border: 2px solid var(--line);
+        background: var(--surface);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.85rem;
+        position: relative;
+        z-index: 1;
+      }
+      .stepper li.active { color: var(--ink); font-weight: 700; }
+      .stepper li.active .step-dot {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: var(--on-accent);
+        box-shadow: 0 0 0 4px var(--accent-soft);
+      }
+      .stepper li.done .step-dot {
+        background: var(--accent-soft);
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .course-line {
+        display: inline-block;
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-weight: 700;
+        padding: 3px 12px;
+        border-radius: 999px;
+      }
+      .panel:not(.result-panel) h2 { position: relative; padding-bottom: 9px; }
+      .panel:not(.result-panel) h2::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 34px;
+        height: 3px;
+        border-radius: 2px;
+        background: var(--gold);
+      }
+      .btn {
+        background: linear-gradient(180deg, var(--accent-2), var(--accent));
+        box-shadow: 0 8px 18px -8px rgba(30, 82, 64, 0.55);
+        transition: transform 0.12s ease, box-shadow 0.12s ease;
+      }
+      .btn.secondary { box-shadow: none; }
+      @media (hover: hover) {
+        .btn:not([disabled]):hover { transform: translateY(-1px); }
+      }
+      .btn:active { transform: translateY(0); }
+      :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+      .structure-list .pts {
+        background: var(--accent-soft);
+        border-radius: 8px;
+        padding: 2px 8px;
+        text-align: center;
+        align-self: flex-start;
+      }
+      .hw-tag { display: inline-flex; align-items: center; gap: 6px; }
+      .hw-tag svg { width: 14px; height: 14px; flex: 0 0 auto; }
+      .code-box { border: 1px dashed #565d52; }
+      .exam-head {
+        border-bottom: 1px solid var(--line);
+        box-shadow: 0 12px 18px -16px rgba(0, 0, 0, 0.35);
+      }
+      .progress-track { box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.14); }
+      .progress-fill { background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
+      .q-num {
+        background: var(--accent-soft);
+        border-radius: 999px;
+        padding: 2px 11px;
+      }
+      .q-meta-right { display: inline-flex; gap: 6px; align-items: center; }
+      .q-chapter {
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        color: var(--ink-2);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 1px 9px;
+      }
+      .q-type {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        color: var(--accent);
+        border-color: var(--accent);
+        background: var(--accent-soft);
+        font-weight: 700;
+      }
+      .q-type svg { width: 14px; height: 14px; flex: 0 0 auto; }
+      .opt { position: relative; transition: border-color 0.15s ease, background 0.15s ease; }
+      .opt input {
+        position: absolute;
+        opacity: 0;
+        width: 1px;
+        height: 1px;
+        margin: 0;
+      }
+      .opt:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+      .opt-letter {
+        flex: 0 0 auto;
+        width: 27px;
+        height: 27px;
+        border-radius: 50%;
+        border: 1.5px solid var(--line);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.85rem;
+        color: var(--ink-2);
+        margin-top: 1px;
+      }
+      .opt:has(input:checked) .opt-letter {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: var(--on-accent);
+      }
+      .result-icon { box-shadow: 0 0 0 6px var(--accent-soft); }
+      .result-icon.warn { box-shadow: 0 0 0 6px var(--warn-bg); }
+      .result-icon.err { box-shadow: 0 0 0 6px var(--danger-bg); }
+      @media (prefers-reduced-motion: reduce) {
+        .btn, .opt { transition: none; }
+        .btn:not([disabled]):hover { transform: none; }
+      }
+      /* ---- result ---- */
+      .result-icon {
+        width: 64px; height: 64px;
+        border-radius: 50%;
+        background: var(--accent-soft);
+        color: var(--accent);
+        display: flex; align-items: center; justify-content: center;
+        margin: 6px auto 14px;
+      }
+      .result-icon svg { width: 34px; height: 34px; }
+      .result-icon.warn { background: var(--warn-bg); color: var(--warn-ink); }
+      .result-icon.err { background: var(--danger-bg); color: var(--danger); }
+      .result-panel { text-align: center; }
+      .result-panel h2 { margin-bottom: 8px; }
+      .result-panel p { color: var(--ink-2); margin: 6px 0; }
+      .result-panel .btn { margin-top: 18px; }
+      [hidden] { display: none !important; }
+      @media (prefers-reduced-motion: reduce) {
+        .progress-fill { transition: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+
+      <nav class="stepper" id="stepper" aria-label="測驗流程">
+        <ol>
+          <li data-step="1" class="active" aria-current="step"><span class="step-dot" aria-hidden="true">1</span><span>輸入資料</span></li>
+          <li data-step="2"><span class="step-dot" aria-hidden="true">2</span><span>手寫題</span></li>
+          <li data-step="3"><span class="step-dot" aria-hidden="true">3</span><span>線上測驗</span></li>
+          <li data-step="4"><span class="step-dot" aria-hidden="true">4</span><span>送出完成</span></li>
+        </ol>
+      </nav>
+
+      <!-- 步驟一：身分資料 -->
+      <section id="step-identity">
+        <header class="banner">
+          <p class="banner-course">健行科技大學 · 科技倫理與智慧商務</p>
+          <h1 class="banner-title">期中測驗</h1>
+          <p class="banner-lede">請先輸入你的資料。確認無誤後，系統會先顯示 2 題手寫題，再進入線上測驗。本測驗不限時間，請慢慢思考、仔細作答。</p>
+          <ul class="banner-chips">
+            <li>範圍：第 1–3 章</li>
+            <li>手寫 20 分 ＋ 線上 80 分</li>
+            <li>不限時間</li>
+          </ul>
+        </header>
+
+        <div class="panel">
+          <h2>學生資料</h2>
+          <p class="sub">資料將與你的作答一起送出，請務必填寫正確。</p>
+          <label class="field">
+            <span>班級</span>
+            <input id="in-class" type="text" autocomplete="off" placeholder="例如：資工二甲" />
+            <span class="field-error" id="err-class">請填寫班級</span>
+          </label>
+          <label class="field">
+            <span>學號</span>
+            <input id="in-id" type="text" autocomplete="off" inputmode="text" placeholder="請輸入學號" />
+            <span class="field-error" id="err-id">請填寫學號</span>
+          </label>
+          <label class="field">
+            <span>姓名</span>
+            <input id="in-name" type="text" autocomplete="off" placeholder="請輸入姓名" />
+            <span class="field-error" id="err-name">請填寫姓名</span>
+          </label>
+          <button class="btn" id="btn-start" type="button">開始測驗</button>
+        </div>
+
+        <div class="panel">
+          <h2>測驗組成</h2>
+          <ul class="structure-list">
+            <li>
+              <span class="pts">20 分</span>
+              <span class="desc">手寫題 2 題<small>寫在紙本答題卷上，繳交後由老師批改</small></span>
+            </li>
+            <li>
+              <span class="pts">80 分</span>
+              <span class="desc">線上測驗 20 題<small>選擇題與連連看，每題 4 分，系統自動計分</small></span>
+            </li>
+            <li>
+              <span class="pts">100 分</span>
+              <span class="desc">總分<small>成績不會顯示在畫面上，送出後即完成</small></span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 步驟二：手寫題 -->
+      <section id="step-handwriting" hidden>
+        <p class="course-line">第一部分 · 紙本作答</p>
+        <h1 class="page-title">手寫題（2 題）</h1>
+        <div class="identity-line" id="hw-identity"></div>
+
+        <div class="panel">
+          <h2>先抄下你的對照碼</h2>
+          <p class="sub">請在紙本答題卷上寫下班級、學號、姓名，以及下面這組對照碼，老師批改時會用它對照你的線上作答。</p>
+          <div class="code-box">
+            <p class="code-label">對照碼</p>
+            <p class="code-value" id="hw-code"></p>
+          </div>
+          <div class="notice">手寫題請直接寫在紙本答題卷上，不需要在手機上輸入答案。</div>
+
+          <div class="hw-block">
+            <span class="hw-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>手寫題一 · 情境論證題（10 分）</span>
+            <h3 id="hw-scenario-title"></h3>
+            <p id="hw-scenario-body"></p>
+            <div class="stance-box">
+              <span class="stance-name" id="hw-stance-name"></span>
+              <p id="hw-stance-text"></p>
+            </div>
+            <p class="req">作答要求：依系統指定的立場寫出論點與理由，約 150–200 字；可引用課堂概念，但不能只寫「我同意／不同意」而沒有論證。每位同學的情境與立場由系統隨機指定，請依你畫面上看到的作答。</p>
+          </div>
+
+          <div class="hw-block">
+            <span class="hw-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>手寫題二 · 個人數據觀察題（10 分）</span>
+            <h3>看一看你自己的手機數據</h3>
+            <p>請拿出你的手機，查看「螢幕使用時間」（iPhone：設定 → 螢幕使用時間；Android：設定 → 數位健康），或最近收到的 5 則 App 推播通知，在紙本答題卷上抄下以下數據並寫一句分析：</p>
+            <p>1. 昨天手機總使用時間，以及使用時間最長的前三個 App 各花了多少時間；或最近 5 則推播的來源 App 與內容類型。</p>
+            <p>2. 寫一句分析：從這些數據來看，演算法或推播設計如何影響你的注意力或消費行為？（例如：哪個 App 最會留住你？你覺得是自己想看，還是被設計推著看？）</p>
+            <p class="req">作答要求：數據要真實抄錄，不得憑空編造；分析只需一句話，但必須對應你抄下的數據。</p>
+          </div>
+        </div>
+
+        <div class="submit-zone">
+          <button class="btn" id="btn-to-exam" type="button">我已抄好對照碼與題目，開始線上測驗</button>
+          <p class="submit-note">手寫題請記得寫在紙本答題卷上，測驗結束後連同答題卷一起繳交。</p>
+        </div>
+      </section>
+
+      <!-- 步驟三：線上測驗 -->
+      <section id="step-exam" hidden>
+        <div class="exam-head">
+          <p class="course-line">第二部分 · 線上測驗</p>
+          <div class="progress-row">
+            <span id="exam-identity"></span>
+            <span>已作答 <b id="progress-count">0 / 20</b></span>
+          </div>
+          <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+        <div id="questions"></div>
+        <div class="submit-zone">
+          <button class="btn" id="btn-submit" type="button">送出答案</button>
+          <p class="submit-note">送出後無法修改，也不會顯示分數。</p>
+        </div>
+      </section>
+
+      <!-- 步驟四：結果 -->
+      <section id="step-done" hidden>
+        <div class="panel result-panel">
+          <div class="result-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          </div>
+          <h2>已送出，測驗完成</h2>
+          <p>你的作答已送出並記錄。成績將由老師批改後另行公布，本畫面不會顯示分數。</p>
+          <p>請確認紙本答題卷已寫上班級、學號、姓名與對照碼，並繳交給老師。</p>
+        </div>
+      </section>
+
+      <section id="step-duplicate" hidden>
+        <div class="panel result-panel">
+          <div class="result-icon warn" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>
+          </div>
+          <h2>此學號已送出過</h2>
+          <p>系統已有這個學號的作答紀錄，請勿重複送出。</p>
+          <p>如果你確定自己還沒有送出成功，請向老師說明。</p>
+        </div>
+      </section>
+
+      <section id="step-error" hidden>
+        <div class="panel result-panel">
+          <div class="result-icon err" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+          </div>
+          <h2>送出失敗</h2>
+          <p id="error-message">連線發生問題，你的答案還保留在這台裝置上，可以再試一次。</p>
+          <button class="btn" id="btn-retry" type="button">重新送出</button>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- 送出確認 -->
+    <div class="modal-backdrop" id="confirm-modal" hidden>
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+        <h3 id="confirm-title">確認送出答案？</h3>
+        <p id="confirm-detail"></p>
+        <p>送出後無法修改，分數不會顯示在畫面上。</p>
+        <div class="btn-row">
+          <button class="btn" id="btn-confirm-send" type="button">確認送出</button>
+          <button class="btn secondary" id="btn-confirm-back" type="button">再檢查一下</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      var QUESTIONS = [{"id": "CH1-Q01", "chapter": "CH1", "type": "choice", "question": "根據投影片，數位足跡除了搜尋紀錄之外，還包含哪三類數據？", "options": ["空間數據、時間數據、意圖數據", "姓名、電話、身分證字號", "瀏覽器版本、作業系統、螢幕尺寸", "按讚數、追蹤數、粉絲數"]}, {"id": "CH1-Q02", "chapter": "CH1", "type": "choice", "question": "重新瞄準（Retargeting）的第二個步驟是什麼？", "options": ["訪客造訪", "植入標籤", "跨網追蹤", "精準導回"]}, {"id": "CH1-Q03", "chapter": "CH1", "type": "choice", "question": "投影片如何描述 Retargeting 的商業本質？", "options": ["提高商品售價以增加利潤", "強迫消費者註冊會員才能瀏覽商品", "利用消費者過往的意圖軌跡進行程式化購買，大幅降低獲客成本", "免費提供商品換取使用者個資"]}, {"id": "CH1-Q04", "chapter": "CH1", "type": "choice", "question": "十年前追蹤技術的特徵，下列何者正確？", "options": ["依賴第三方 Cookie，且無法跨手機與電腦追蹤", "透過單一帳號綁定掌握所有生活面向", "即使清除 Cookie 仍可辨識手機特徵", "結合 GPS 與 Beacon 進行適地性行銷"]}, {"id": "CH1-Q05", "chapter": "CH1", "type": "choice", "question": "第三方 Cookie 的運作方式為何？", "options": ["直接讀取使用者的手機通訊錄與簡訊", "透過衛星定位追蹤使用者即時位置", "要求使用者登入後才能記錄行為", "伺服器發送小文字檔塞入瀏覽器，記錄造訪路徑與點擊偏好"]}, {"id": "CH1-Q06", "chapter": "CH1", "type": "choice", "question": "HTTP Web Log 分析可以得到下列哪組資訊？", "options": ["使用者的信用卡卡號與密碼", "來源 IP、瀏覽器版本與文件下載數", "手機電池電量與螢幕解析度", "使用者的即時心率與睡眠品質"]}, {"id": "CH1-Q07", "chapter": "CH1", "type": "choice", "question": "下列哪個例子說明「跨裝置識別」？", "options": ["清除 Cookie 後廣告就不再出現", "手機看 YouTube 廣告，電腦出現 FB 連結", "只用同一台電腦瀏覽就不會被追蹤", "關閉 GPS 就能停止所有追蹤"]}, {"id": "CH1-Q08", "chapter": "CH1", "type": "choice", "question": "設備指紋（Fingerprinting）蒐集下列哪組參數來辨識裝置？", "options": ["身分證字號、住址、電話", "銀行帳號、信用卡號、密碼", "螢幕解析度、字體、電池電量", "指紋、臉部特徵、聲紋"]}, {"id": "CH1-Q09", "chapter": "CH1", "type": "choice", "question": "設備指紋最讓人難以擺脫的特性是什麼？", "options": ["必須使用者主動安裝 App 才有效", "只能在同一台電腦上運作", "每週會自動失效一次", "即便開啟無痕模式或更換 IP 仍難逃追蹤"]}, {"id": "CH1-Q10", "chapter": "CH1", "type": "choice", "question": "LBS 適地性服務與 Beacon 結合了哪些技術？", "options": ["GPS、5G 基站、Wi-Fi 與 NFC/Beacon", "衛星電話、傳真機、廣播電台", "信用卡晶片、提款卡磁條", "體溫計、血壓計、心電圖"]}, {"id": "CH1-Q11", "chapter": "CH1", "type": "choice", "question": "投影片把十年後的追蹤階段稱為什麼？", "options": ["被動的瀏覽器標記", "全方位的立體側寫", "無感知的環境預判", "單一裝置的數據孤島"]}, {"id": "CH1-Q12", "chapter": "CH1", "type": "choice", "question": "全時生物感知可以即時偵測下列哪些生理狀態？", "options": ["血壓、血糖、膽固醇", "心率、情緒起伏與專注度", "視力、聽力、嗅覺", "步數、卡路里、運動里程"]}, {"id": "CH1-Q13", "chapter": "CH1", "type": "choice", "question": "商務代理人（Agentic Commerce）如何改變消費決策？", "options": ["消費者必須親自到實體店面才能下單", "所有商品價格都由政府統一規定", "人類擁有專屬 AI Agent 自動網購，消費決策由人類轉移至 AI 系統代勞", "廣告完全消失，消費者不再看到任何行銷"]}, {"id": "CH1-Q14", "chapter": "CH1", "type": "choice", "question": "在 A2A 經濟中，平台根據什麼進行競價？", "options": ["使用者的月薪收入", "個人數位分身（Digital Twin）", "商品的製造成本", "店家的實體店面坪數"]}, {"id": "CH1-Q15", "chapter": "CH1", "type": "choice", "question": "從碎片資料到商業智慧的第二步「資料探勘」在做什麼？", "options": ["把原始足跡匯入數據池", "刪除所有使用者的個人資料", "產出視覺化報表與精準預測模型", "利用演算法進行關聯分析與特徵萃取"]}, {"id": "CH1-Q16", "chapter": "CH1", "type": "choice", "question": "Target 懷孕預測模型分析了幾項關鍵消費特徵？", "options": ["5 項", "10 項", "25 項", "100 項"]}, {"id": "CH1-Q17", "chapter": "CH1", "type": "choice", "question": "為什麼「無香精保養品」是 Target 模型的重要特徵？", "options": ["孕婦在懷孕初期約前 20 週對氣味非常敏感，會大量換成無香精產品", "無香精產品價格比較貴，代表消費力較高", "無香精產品只有孕婦才能購買", "無香精產品含有特殊成分可檢測懷孕"]}, {"id": "CH1-Q18", "chapter": "CH1", "type": "choice", "question": "SICAS 模型中的「C」代表什麼？", "options": ["搜尋，比較商品", "連接，建立互動", "折扣，刺激購買", "客服，解決問題"]}, {"id": "CH1-Q19", "chapter": "CH1", "type": "choice", "question": "演算法核心預測邏輯的第一步「捕捉高意圖行為」追蹤什麼？", "options": ["使用者的銀行存款餘額", "使用者的家庭成員人數", "使用者的手機品牌與型號", "頁面停留時間與滑鼠軌跡"]}, {"id": "CH1-Q20", "chapter": "CH1", "type": "choice", "question": "投影片認為演算法瘋狂搶奪注意力的原因是什麼？", "options": ["注意力可以賣給政府換取補助", "資訊量無限增長、注意力極度稀缺，誰掌握注意力誰就掌握定價權與銷售額", "廣告主規定平台必須搶奪注意力", "使用者要求平台搶奪自己的注意力"]}, {"id": "CH1-Q21", "chapter": "CH1", "type": "choice", "question": "投影片如何描述資訊不對稱的核心問題？", "options": ["平台掌握了上帝視角的巨量數據，而消費者只能看到一塊小螢幕", "消費者掌握的數據比平台更多", "平台與消費者看到的資訊完全相同", "資訊不對稱只發生在實體店面"]}, {"id": "CH1-Q22", "chapter": "CH1", "type": "choice", "question": "暗黑模式（Dark Patterns）的最終目的是什麼？", "options": ["幫助使用者更快完成購買以節省時間", "讓介面看起來更美觀", "極大化企業利潤，實質上剝奪用戶真實的選擇權與知情權", "減少企業的廣告支出"]}, {"id": "CH1-Q23", "chapter": "CH1", "type": "choice", "question": "下列何者屬於「阻礙式流程」的暗黑模式？", "options": ["商品頁面清楚標示運費與手續費", "拒絕按鈕與接受按鈕一樣大、一樣明顯", "購物車不會預先勾選任何附加商品", "訂閱、加入非常簡單，但取消訂閱、刪除帳號卻設計極為繁複"]}, {"id": "CH1-Q24", "chapter": "CH1", "type": "choice", "question": "「假急迫感」利用什麼心理促使衝動購物？", "options": ["錯失恐懼", "罪惡感", "從眾心理", "好奇心"]}, {"id": "CH1-Q25", "chapter": "CH1", "type": "choice", "question": "下列何者是「物件偷渡」的暗黑模式？", "options": ["把運費藏到付款前才顯示", "在購物車裡預先勾選未主動選擇的附加商品、保固或付費訂閱", "用倒數計時營造庫存見底的假象", "把拒絕按鈕設計得極小且灰階"]}, {"id": "CH1-Q26", "chapter": "CH1", "type": "choice", "question": "隱私權彈窗的「不對稱設計」如何呈現？", "options": ["接受與拒絕按鈕大小完全相同", "完全不提供拒絕選項", "「接受」是大而顯眼的醒目按鈕，「拒絕」或「關閉」則極小、灰階或需多點好幾層的隱蔽連結", "拒絕按鈕比接受按鈕更大"]}, {"id": "CH1-Q27", "chapter": "CH1", "type": "choice", "question": "歐盟執委會抽查 314 個線上平台，哪一項違規家數最多？", "options": ["使用虛假倒數計時", "利用視覺誘導消費", "刻意隱藏重要退訂資訊", "擅自加購商品"]}, {"id": "CH1-Q28", "chapter": "CH1", "type": "choice", "question": "投影片用一組對照價格說明大數據殺熟：新註冊用戶 100 元，忠實老客戶反而要付多少？", "options": ["100 元", "120 元", "200 元", "150 元"]}, {"id": "CH1-M01", "chapter": "CH1", "type": "matching", "question": "請將追蹤技術演進的三個階段與其特徵配對。", "lefts": ["十年前", "現在", "十年後"], "rights": ["被動的瀏覽器標記", "全方位的立體側寫", "無感知的環境預判"]}, {"id": "CH1-M02", "chapter": "CH1", "type": "matching", "question": "請將重新瞄準（Retargeting）的四個步驟與其內容配對。", "lefts": ["訪客造訪", "植入標籤", "跨網追蹤", "精準導回"], "rights": ["進入電商網站瀏覽商品，但未完成下單", "網站透過 Cookie 或 Pixel 在瀏覽器貼上專屬標籤", "訪客造訪其他網站時，廣告系統辨識出該標籤", "第三方廣告欄位投放剛瀏覽過的商品，將使用者導回下單"]}, {"id": "CH1-M03", "chapter": "CH1", "type": "matching", "question": "請將 SICAS 模型的五個階段與其意涵配對。", "lefts": ["感知", "興趣", "連接", "行動", "分享"], "rights": ["品牌觸及", "產生好奇", "建立互動", "完成購買", "擴散口碑"]}, {"id": "CH1-M04", "chapter": "CH1", "type": "matching", "question": "請將暗黑模式的手法與其說明配對。", "lefts": ["阻礙式流程", "假急迫感", "羞辱設計", "物件偷渡", "隱藏費用", "不對稱設計"], "rights": ["訂閱簡單、取消繁複", "倒數計時與僅剩最後 1 件", "拒絕按鈕使用帶罪惡感的詞彙", "購物車預先勾選附加商品、保固或付費訂閱", "運費與手續費到付款前才顯示", "接受按鈕大而顯眼，拒絕按鈕極小、灰階或多層隱蔽"]}, {"id": "CH1-M05", "chapter": "CH1", "type": "matching", "question": "請將 Target 懷孕預測模型的特徵商品與其原因配對。", "lefts": ["無香精保養品", "保健食品", "大包裝日用品", "舒緩生理不適的常備品"], "rights": ["懷孕初期約前 20 週對氣味敏感", "開始規律購買大包裝鈣片、鎂、鋅與孕婦維他命", "提前準備洗手乳、乾洗手與棉球", "緩解孕吐、胃痛或初期感冒的溫和藥品或花草茶"]}, {"id": "CH1-M06", "chapter": "CH1", "type": "matching", "question": "請將殺熟與價格歧視的案例與其內容配對。", "lefts": ["Amazon 2000 年 DVD 實驗", "攜程鑽石會員訂房案", "Costco 會員方案", "Amazon 依消費力定價"], "rights": ["刪除 Cookie 後，同一片 DVD 從 26.24 美元降為 22.74 美元", "結帳價 2,889 元高於飯店掛牌價 1,377 元，法院判決構成欺詐、退一賠三", "先設計不同方案，讓消費者自己決定要不要升級", "根據消費力與購買習慣顯示不同價格，同商品沒有更快送達也沒有額外服務"]}, {"id": "CH2-Q01", "chapter": "CH2", "type": "choice", "question": "沙發商務的 6A 不包括下列何者？", "options": ["Anytime 隨時", "Anyone 隨緣", "Any discount 隨時折扣", "Any channel 隨通路"]}, {"id": "CH2-Q02", "chapter": "CH2", "type": "choice", "question": "投影片說平台最賺錢的商品不是內容，而是什麽？", "options": ["用戶的停留時間與注意力", "短影音的拍攝器材", "平台的伺服器設備", "網紅的粉絲人數"]}, {"id": "CH2-Q03", "chapter": "CH2", "type": "choice", "question": "為什麼「不是每次都有獎」反而讓人更想再滑一次？", "options": ["因為獎品價值比較高", "不確定獎賞會引發多巴胺預期，進而形成重複行為、更難停下", "因為使用者喜歡輸的感覺", "因為平台會補償沒中獎的使用者"]}, {"id": "CH2-Q04", "chapter": "CH2", "type": "choice", "question": "短影音介面用什麼設計消除使用者的停止點？", "options": ["每支影片固定播放 60 秒", "每滑 10 支就強制休息", "影片會自動標示已看完", "沒有頁尾、沒有煞車點"]}, {"id": "CH2-Q05", "chapter": "CH2", "type": "choice", "question": "投影片用哪句話提醒「好用，不等於對你有益」？", "options": ["商業目標≠用戶福祉", "免費的就是最好的", "功能越多越好", "使用者永遠是對的"]}, {"id": "CH2-Q06", "chapter": "CH2", "type": "choice", "question": "下列何者是「以物找物」推薦的例子？", "options": ["相似用戶買了什麼就推薦什麼", "看貓咪影片，系統抓內容特徵推薦寵物盲盒", "依粉絲群的共同信念推薦內容", "依朋友的購買紀錄推薦廣告"]}, {"id": "CH2-Q07", "chapter": "CH2", "type": "choice", "question": "推薦系統「資料蒐集→清理→建模→推薦」流程中，第三步是什麼？", "options": ["資料蒐集", "清理", "建模", "推薦"]}, {"id": "CH2-Q08", "chapter": "CH2", "type": "choice", "question": "IG 推薦頁只剩韓團內容、看不見異質資訊，這是投影片說的哪種現象？", "options": ["過濾氣泡", "同溫層", "資訊超載", "數位落差"]}, {"id": "CH2-Q09", "chapter": "CH2", "type": "choice", "question": "粉絲群反覆強化共同信念、排斥異議，這是投影片說的哪種現象？", "options": ["過濾氣泡", "同溫層", "資訊超載", "數位落差"]}, {"id": "CH2-Q10", "chapter": "CH2", "type": "choice", "question": "投影片說推薦偏誤把哪三種人性弱點放大成流量？", "options": ["好奇、懶惰、健忘", "貪心、恐懼、嫉妒", "衝動、拖延、完美主義", "憤怒、迎合、窄化"]}, {"id": "CH2-Q11", "chapter": "CH2", "type": "choice", "question": "投影片如何形容確認偏誤在高互動內容中的角色？", "options": ["確認偏誤不是 bug，而是高互動內容的燃料", "確認偏誤是系統故障，應該修復", "確認偏誤只會出現在年長使用者身上", "確認偏誤與互動率無關"]}, {"id": "CH2-Q12", "chapter": "CH2", "type": "choice", "question": "投影片說假新聞跑得快，是因為哪三種情緒先於查證？", "options": ["快樂×悲傷×平靜", "好奇×無聊×疲倦", "恐懼×憤怒×驚奇", "信任×希望×感恩"]}, {"id": "CH2-Q13", "chapter": "CH2", "type": "choice", "question": "震驚體標題的運作鏈是什麼？", "options": ["好奇→購買→分享→退貨", "未知感→焦慮→點擊→廣告曝光", "恐懼→憤怒→驚奇→封鎖", "搜尋→比價→下單→取貨"]}, {"id": "CH2-Q14", "chapter": "CH2", "type": "choice", "question": "場景化導購包含哪五個要素？", "options": ["時間、地點、人物、事件、連接方式", "價格、品質、品牌、通路、促銷", "搜尋、比價、購買、退貨、評價", "文字、圖片、音樂、影片、直播"]}, {"id": "CH2-Q15", "chapter": "CH2", "type": "choice", "question": "投影片說場景化導購「不是賣商品，是賣什麼」？", "options": ["折扣", "此刻的你", "品牌形象", "會員資格"]}, {"id": "CH2-Q16", "chapter": "CH2", "type": "choice", "question": "AIDMA 模型中的 D 代表什麼？", "options": ["搜尋 Search", "分享 Share", "折扣 Discount", "慾望 Desire"]}, {"id": "CH2-Q17", "chapter": "CH2", "type": "choice", "question": "O 型消費的正確順序是什麼？", "options": ["短影音發現→實體門市試穿→電商平台下單→社群分享→再觸發", "電商平台下單→短影音發現→實體門市試穿→社群分享", "實體門市試穿→短影音發現→社群分享→電商平台下單", "社群分享→短影音發現→電商平台下單→實體門市試穿"]}, {"id": "CH2-Q18", "chapter": "CH2", "type": "choice", "question": "投影片如何描述 KOC 的特徵組合？", "options": ["大眾×低互動×低轉換", "小眾×高互動×高轉換", "百萬粉絲×高收費×低信任", "官方帳號×制式廣告×單向傳播"]}, {"id": "CH2-Q19", "chapter": "CH2", "type": "choice", "question": "直播間用哪四個元素共同製造「現在就買」的感覺？", "options": ["倒數、庫存、聊天室與主播語氣", "燈光、音響、布景與服裝", "抽獎、贈品、紅包與折價券", "劇本、演員、導演與剪接"]}, {"id": "CH2-Q20", "chapter": "CH2", "type": "choice", "question": "「只剩 8 件」這類話術利用什麼心理？", "options": ["從眾心理", "好奇心", "損失規避", "罪惡感"]}, {"id": "CH2-Q21", "chapter": "CH2", "type": "choice", "question": "抖音興趣電商「貨找人」的特徵是什麼？", "options": ["搜尋意圖明確、比較評估再購買", "娛樂中斷點、刺激秒下單、高退貨", "先到實體門市試穿再線上下單", "只接受貨到付款"]}, {"id": "CH2-Q22", "chapter": "CH2", "type": "choice", "question": "小紅書種草閉環的第三步是什麼？", "options": ["主動搜尋痛點", "演算法推播百篇同款筆記", "產生跟風與容貌焦慮", "點擊筆記內商品卡下單"]}, {"id": "CH2-Q23", "chapter": "CH2", "type": "choice", "question": "投影片提到抖音興趣電商的女裝品類，衝動退貨率大約多高？", "options": ["50%~80%", "5%~10%", "20%~30%", "90% 以上"]}, {"id": "CH2-Q24", "chapter": "CH2", "type": "choice", "question": "下列何者是投影片提到的 Threads 隱蔽行銷警訊？", "options": ["發文內容附上完整商品規格表", "發文不到 5 分鐘就有多個帳號排隊問哪裡買", "發文者公開標示自己是廣告", "留言區有人理性討論商品缺點"]}, {"id": "CH2-Q25", "chapter": "CH2", "type": "choice", "question": "遊戲化積點的最後 3% 進度，需要付出什麼代價？", "options": ["再買一件商品", "連續登入 7 天", "分享給 1 位好友", "看 30 支廣告＋邀請 15 位新用戶"]}, {"id": "CH2-Q26", "chapter": "CH2", "type": "choice", "question": "聯盟行銷中，發文者每促成一筆購買能抽成多少？", "options": ["2%~15%", "20%~30%", "固定 50 元", "沒有抽成，純屬分享"]}, {"id": "CH2-Q27", "chapter": "CH2", "type": "choice", "question": "投影片拆解 1,000 元網購的資金流向，消費者拿到的現金點數回饋約多少？", "options": ["約 100 元", "約 200 元", "約 50 元", "約 650 元"]}, {"id": "CH2-M01", "chapter": "CH2", "type": "matching", "question": "請將 UX 蜂巢的六要素英文名稱與中文意涵配對。", "lefts": ["Useful", "Usable", "Findable", "Credible", "Accessible", "Valuable"], "rights": ["有用", "好用", "易尋", "可信", "可及", "有價值"]}, {"id": "CH2-M02", "chapter": "CH2", "type": "matching", "question": "請將短影音黃金前 3 秒的時間段與其任務配對。", "lefts": ["0–3 秒", "4–10 秒", "11–15 秒"], "rights": ["高反差鉤子", "痛點＋反轉", "CTA 行動呼籲"]}, {"id": "CH2-M03", "chapter": "CH2", "type": "matching", "question": "請將三個消費決策模型與其流程配對。", "lefts": ["AIDMA", "AISAS", "SICAS"], "rights": ["注意→興趣→慾望→記憶→行動", "注意→興趣→搜尋→行動→分享", "感知→興趣互動→連結溝通→行動分享"]}, {"id": "CH2-M04", "chapter": "CH2", "type": "matching", "question": "請將五大平台導購型態與其導購手法配對。", "lefts": ["小紅書／筆記", "短影音／娛樂", "Threads／對話", "遊戲化／任務", "現金回饋／工具"], "rights": ["KOC 種草", "即看即買", "暗樁連結", "積點進度", "分潤追蹤"]}, {"id": "CH2-M05", "chapter": "CH2", "type": "matching", "question": "請將奪回注意力主導權的四個防禦動作與其做法配對。", "lefts": ["主動弄髒演算法", "72 小時冷卻期", "識別分潤網址", "物理切斷多巴胺"], "rights": ["刻意搜尋反方與陌生主題", "把想買，變成真的需要", "檢查追蹤碼、揭露與暗樁", "灰階模式＋移除桌面入口"]}, {"id": "CH2-M06", "chapter": "CH2", "type": "matching", "question": "請將 Threads 隱蔽導購三部曲的步驟與其手法配對。", "lefts": ["反串吐槽", "留言共鳴", "分潤連結"], "rights": ["開頭 Hook，用假抱怨吸引注意", "神反轉，試用後驚為天人", "假帳號問求連結，原 PO 貼出團購分潤網址"]}, {"id": "CH3-Q01", "chapter": "CH3", "type": "choice", "question": "零工經濟的計酬與工作型態特徵是什麼？", "options": ["固定月薪、打卡鐘、辦公室", "時薪制、排班制、實體門市", "按件計酬、高度彈性、平台派單、無底薪", "年薪制、責任制、在家工作"]}, {"id": "CH3-Q02", "chapter": "CH3", "type": "choice", "question": "投影片用哪個例子說明零工經濟的「隨地」？", "options": ["大雨或尖峰時段訂單暴增時", "不限餐廳，直接送到大學宿舍門口", "指紋一按，行動支付瞬間扣款", "整合實體老店與雲端虛擬廚房"]}, {"id": "CH3-Q03", "chapter": "CH3", "type": "choice", "question": "店家在外送平台上需要支付多少平台抽成？", "options": ["10%", "20%", "30%", "50%"]}, {"id": "CH3-Q04", "chapter": "CH3", "type": "choice", "question": "投影片說平台真正賣的是什麼？", "options": ["餐點與飲料", "連結與數據", "外送車輛與裝備", "店面租金"]}, {"id": "CH3-Q05", "chapter": "CH3", "type": "choice", "question": "下列何者是投影片提到的零工經濟「自由的誘惑」，而非隱形代價？", "options": ["自負油錢與車輛磨損", "無勞健保與帶薪特休", "自由決定開工時間", "無底薪，隨時面臨降薪"]}, {"id": "CH3-Q06", "chapter": "CH3", "type": "choice", "question": "下列何者是投影片提到的零工經濟「隱形的代價」？", "options": ["自由決定開工時間", "多勞多得，接單即時領薪", "無辦公室人際壓力", "無底薪，隨時面臨降薪"]}, {"id": "CH3-Q07", "chapter": "CH3", "type": "choice", "question": "投影片所說的「黑盒子運算」是指什麼？", "options": ["外送員使用的黑色保溫箱", "派單規則與薪資公式不透明，外送員只能被動接受指令、無法與 AI 談判", "平台伺服器機房的顏色", "消費者看不到餐點製作過程"]}, {"id": "CH3-Q08", "chapter": "CH3", "type": "choice", "question": "平台會在什麼時候啟動「動態加價」？", "options": ["大雨或尖峰時段訂單暴增時", "深夜沒有訂單時", "店家打烊之後", "每個月固定一天"]}, {"id": "CH3-Q09", "chapter": "CH3", "type": "choice", "question": "投影片舉的「勞動激勵陷阱」例子是什麼？", "options": ["每月固定發放年終獎金", "外送員可自由選擇休假日", "限時加碼：2 小時滿 8 單多 100 元", "平台提供免費健檢"]}, {"id": "CH3-Q10", "chapter": "CH3", "type": "choice", "question": "外送員滿意度低於多少時，系統會發出警告，甚至強制減單或停權？", "options": ["95%", "90%", "85%", "70%"]}, {"id": "CH3-Q11", "chapter": "CH3", "type": "choice", "question": "為什麼投影片說評價機制會「製造對立」？", "options": ["因為消費者都不給五星", "店家出餐慢，顧客卻遷怒外送員，平台把管理責任外包給消費者", "因為外送員會互相給負評", "因為平台公開所有評價內容"]}, {"id": "CH3-Q12", "chapter": "CH3", "type": "choice", "question": "連勝獎勵機制如何讓外送員捨不得退出 App？", "options": ["提供免費午餐", "強制鎖定手機畫面", "提高每一單的基本薪資", "跑單勳章刺激多巴胺，將勞動包裝成破關遊戲"]}, {"id": "CH3-Q13", "chapter": "CH3", "type": "choice", "question": "外送員被 AI 停權後，面臨的最大申訴困境是什麼？", "options": ["罰款金額太高", "罐頭客服迴路，無法接觸真人、申訴無門", "必須重新考試才能復權", "停權紀錄會通知所有店家"]}, {"id": "CH3-Q14", "chapter": "CH3", "type": "choice", "question": "網紅流量變現閉環的最後一步是什麼？", "options": ["短影音視覺激發深夜食慾", "粉絲點擊專屬連結使用折扣碼", "平台瞬間派單", "網紅獲取分潤"]}, {"id": "CH3-Q15", "chapter": "CH3", "type": "choice", "question": "起司瀑布短影音的 4–10 秒在做什麼？", "options": ["視覺鉤子：起司拉絲、酥脆 ASMR", "痛點場景：下雨天不想出門？半夜讀書餓了？", "行動呼籲：輸入專屬優惠碼立刻下單", "片尾感謝粉絲訂閱"]}, {"id": "CH3-Q16", "chapter": "CH3", "type": "choice", "question": "折扣碼背後的 UTM 精準數據追蹤，在平台眼中是什麼？", "options": ["評估網紅帶貨能力的雷達", "單純的優惠憑證", "消費者的會員卡號", "店家的營業執照編號"]}, {"id": "CH3-Q17", "chapter": "CH3", "type": "choice", "question": "投影片舉的社群裂變機制例子是什麼？", "options": ["買一送一限時優惠", "首購免運費", "分享給 3 位同學，各得 100 元", "集滿 10 點換贈品"]}, {"id": "CH3-Q18", "chapter": "CH3", "type": "choice", "question": "為什麼同學的 KOC 限動比傳統廣告更容易讓人跟單？", "options": ["因為限動有折扣碼", "因為防備心零、真實評測、秒速跟單", "因為限動只能維持 24 小時", "因為同學都是專業演員"]}, {"id": "CH3-Q19", "chapter": "CH3", "type": "choice", "question": "投影片說的網紅美食「隱性環境代價」是指什麼？", "options": ["網紅拍片耗電量太大", "餐廳廚房油煙太多", "外送員騎車排放廢氣", "消費者收到時塑膠盒堆疊、餐點冷掉、過度浪費"]}, {"id": "CH3-Q20", "chapter": "CH3", "type": "choice", "question": "從短影音刺激到外送送達只要約 30 分鐘，極致順暢的 UX 徹底刪除了什麼？", "options": ["外送員的休息時間", "理性思考與預算評估的時間", "店家的備餐時間", "消費者的用餐時間"]}, {"id": "CH3-Q21", "chapter": "CH3", "type": "choice", "question": "「原外送費 60，今日特價 29」是投影片用來說明哪種心理操控？", "options": ["錨定效應", "從眾效應", "月暈效應", "沉沒成本"]}, {"id": "CH3-Q22", "chapter": "CH3", "type": "choice", "question": "月付 120 元無限免運的訂閱案例中，消費者為湊免運實質多花多少錢買不必要的奶茶？", "options": ["150 元", "800 元", "120 元", "50 元"]}, {"id": "CH3-Q23", "chapter": "CH3", "type": "choice", "question": "滿 299 折 50 的湊單案例中，消費者實際比原本預計多花多少錢？", "options": ["50 元", "130 元", "80 元", "30 元"]}, {"id": "CH3-Q24", "chapter": "CH3", "type": "choice", "question": "免費試用 14 天的自動扣款圈套，利用了什麼人性弱點？", "options": ["貪小便宜", "延宕與遺忘", "愛面子", "從眾心理"]}, {"id": "CH3-Q25", "chapter": "CH3", "type": "choice", "question": "小費機制的第二步「轉嫁責任」是指什麼？", "options": ["調降基礎外送費", "消費者拒絕給小費", "平台直接發放獎金給外送員", "App 推廣給予辛苦津貼小費"]}, {"id": "CH3-Q26", "chapter": "CH3", "type": "choice", "question": "投影片提出的三個反思問題中，Q2 在問什麼？", "options": ["演算法派單代表誰的利益", "創造湊單需求是商業創新還是心理剝削", "當數據全被掌控，如何爭取問責", "外送員該不該加入工會"]}, {"id": "CH3-M01", "chapter": "CH3", "type": "matching", "question": "請將三種工作型態與其特徵配對。", "lefts": ["傳統正職", "兼職打工", "零工經濟"], "rights": ["固定月薪、打卡鐘、辦公室、勞基法保障", "時薪制、排班制、實體門市、部分保障", "按件計酬、高度彈性、平台派單、無底薪"]}, {"id": "CH3-M02", "chapter": "CH3", "type": "matching", "question": "請將外送平台四方利益網絡的角色與其收支配對。", "lefts": ["消費者", "店家", "網紅", "外送員"], "rights": ["付外送費與服務費", "支付 30% 平台抽成", "帶貨導流賺取分潤", "賺取按件跑單費"]}, {"id": "CH3-M03", "chapter": "CH3", "type": "matching", "question": "請將 AI 停權的三個步驟與其內容配對。", "lefts": ["AI 偵測異常", "直接停權", "罐頭客服迴路"], "rights": ["拒單率高或速度異常", "演算法瞬間斷絕生計", "無法接觸真人、申訴無門"]}, {"id": "CH3-M04", "chapter": "CH3", "type": "matching", "question": "請將檢驗平台經濟 ESG 社會責任的四個面向與其問題配對。", "lefts": ["薪資公平性", "職業安全", "心理健康", "勞動保障"], "rights": ["單價公式黑箱，缺乏最低薪資防線", "雨天趕單職災風險，缺乏商業保險", "評價焦慮與連勝機制導致嚴重過勞", "規避承攬關係，免除特休與退休金"]}, {"id": "CH3-M05", "chapter": "CH3", "type": "matching", "question": "請將極速消費鏈的時間點與其動作配對。", "lefts": ["0 秒", "2 秒", "5 秒", "30 分鐘"], "rights": ["短影音刺激", "深層連結跳轉", "一鍵行動支付", "外送員送達"]}, {"id": "CH3-M06", "chapter": "CH3", "type": "matching", "question": "請將四個消費陷阱案例與其內容配對。", "lefts": ["外送訂閱制", "優惠券湊單", "免費試用", "隱性溢價"], "rights": ["月付 120 元無限免運，實質多花 800 元買不必要的奶茶", "滿 299 折 50，實際多花 80 元買熱量", "14 天期滿無通知，帳單出現 1,200 元年費", "內用 100 元、外送 135 元，店家實收約 70 元、平台抽成約 30 元、跑單費約 20 元、服務費約 15 元"]}, {"id": "CH3-M07", "chapter": "CH3", "type": "matching", "question": "請將四個數位防禦術與其做法配對。", "lefts": ["十分鐘冷卻期", "計算真實成本", "定期清理訂閱", "支持勞動正義"], "rights": ["滑到美食短影音先放下手機等十分鐘，分辨是真餓還是多巴胺", "點餐前加總原價＋溢價＋外送費＋服務費", "檢查自動續訂列表，關閉非必要的免費試用與授權", "理解機制限制，不濫用差評，關注零工權益法規"]}];
+      var SCENARIOS = [{"n": 1, "title": "超市比家人更早知道你懷孕了", "body": "美國零售巨頭 Target 透過分析顧客購買無香精乳液、大容量維他命等 25 項商品特徵，預測一名高中女生懷孕，並在家人知情前寄送嬰兒用品促銷型錄。", "pro": "數據分析讓行銷更精準，消費者獲得真正需要的優惠，是商業智慧的合理運用。", "con": "企業在當事人不知情下推斷高度敏感的個人資訊並主動揭露，侵犯隱私與自主權。"}, {"n": 2, "title": "老客戶反而買得比較貴", "body": "同一件商品，新註冊用戶看到 100 元，長期忠實老客戶卻看到 150 元；平台依消費力與購買習慣顯示不同價格。", "pro": "差別定價是市場機制，企業有權依成本與需求調整價格，忠誠度計畫本來就有差異待遇。", "con": "利用資訊不對稱剝削最忠誠的客戶，且價格差異不透明，消費者無從察覺與選擇。"}, {"n": 3, "title": "一鍵訂閱、五關才能取消", "body": "某平台加入會員只需一鍵，取消訂閱卻要經過五個步驟，還把拒絕按鈕設計得極小、灰階。", "pro": "企業有權設計自己的流程，消費者點選前應自行閱讀條款、注意取消方式。", "con": "刻意用阻礙式流程與不對稱設計剝奪用戶真實選擇權，應受法規約束。"}, {"n": 4, "title": "包裹式授權，一次拿走所有權限", "body": "某 App 要求使用者一次同意所有授權（位置、通訊錄、相簿、麥克風），不同意就無法使用任何功能。", "pro": "一次授權最有效率，服務本來就需要這些數據才能運作，消費者不同意可以選擇不用。", "con": "違反明確授權與適當蒐集原則，使用者沒有真正的選擇，應可逐項授權、保障刪除權。"}, {"n": 5, "title": "滑 5 分鐘，結果滑了 2 小時", "body": "短影音平台用不確定獎賞、沒有頁尾與煞車點的設計，讓使用者原只想滑 5 分鐘，最後滑了 2 小時。", "pro": "使用者自主選擇使用手機，平台只是提供娛樂內容，時間管理是個人責任。", "con": "平台刻意利用多巴胺機制與心理弱點設計成癮，特別對青少年應負社會責任。"}, {"n": 6, "title": "演算法只給你看同一種內容", "body": "某學生的 IG 推薦頁幾乎只剩韓團內容，重要公共議題與不同立場的資訊幾乎看不到。", "pro": "個人化推薦提升資訊效率，使用者本來就偏好自己喜歡的內容，沒人強迫他只看這些。", "con": "過濾氣泡窄化視野、傷害公共討論與思辨能力，平台不應只餵養舒適資訊。"}, {"n": 7, "title": "當自己的老闆，卻沒有勞健保", "body": "外送員享有彈性工時、多勞多得，但要自負油錢與車輛磨損，沒有勞健保、帶薪特休與底薪，還可能隨時被降薪。", "pro": "零工經濟提供自由與彈性收入，適合想兼職或自主安排時間的人，是勞動市場的創新。", "con": "平台以承攬之名規避雇主責任，把全部風險轉嫁給勞工，應補上基本保障。"}, {"n": 8, "title": "AI 說停權就停權，申訴找不到人", "body": "外送員因拒單率較高被 AI 偵測異常，直接停權斷絕生計，客服只有罐頭回覆，無法接觸真人申訴。", "pro": "自動化管理維持服務品質與效率，平台有權依規則處分違規帳號。", "con": "缺乏說明與正當程序，生計被演算法一句話斷絕，應有申訴管道與人工覆核。"}];
+    </script>
+    <script>
+      (function () {
+        "use strict";
+        var GAS_URL = "https://script.google.com/macros/s/AKfycbwEq6_aRGtCuC_eSSjvuZwpJSXO09kpJSJH9JLSmehnx7A4gH5xrCNrkXUoE3zEPmE8/exec";
+        var TOTAL = 20;
+
+        var state = {
+          className: "",
+          studentId: "",
+          name: "",
+          code: "",
+          scenario: null,
+          stance: "",
+          exam: [],        // 本次抽到的題目（含打散後的選項順序）
+          answers: {},     // id -> 選擇題:選項文字字串；連連看:{左:右}
+          submitted: false,
+          sending: false
+        };
+
+        function $(id) { return document.getElementById(id); }
+        function shuffle(arr) {
+          var a = arr.slice();
+          for (var i = a.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var t = a[i]; a[i] = a[j]; a[j] = t;
+          }
+          return a;
+        }
+        function makeCode() {
+          var chars = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+          var out = "";
+          for (var i = 0; i < 5; i++) out += chars.charAt(Math.floor(Math.random() * chars.length));
+          return out;
+        }
+        function show(id) {
+          ["step-identity", "step-handwriting", "step-exam", "step-done", "step-duplicate", "step-error"].forEach(function (s) {
+            $(s).hidden = (s !== id);
+          });
+          var stepMap = { "step-identity": 1, "step-handwriting": 2, "step-exam": 3, "step-done": 4, "step-duplicate": 4, "step-error": 3 };
+          var cur = stepMap[id] || 1;
+          var items = document.querySelectorAll("#stepper li");
+          for (var i = 0; i < items.length; i++) {
+            var n = parseInt(items[i].getAttribute("data-step"), 10);
+            items[i].classList.toggle("active", n === cur);
+            items[i].classList.toggle("done", n < cur);
+            if (n === cur) items[i].setAttribute("aria-current", "step");
+            else items[i].removeAttribute("aria-current");
+            var dot = items[i].querySelector(".step-dot");
+            if (dot) dot.textContent = n < cur ? "✓" : String(n);
+          }
+          window.scrollTo(0, 0);
+        }
+
+        /* ---------- 步驟一 ---------- */
+        $("btn-start").addEventListener("click", function () {
+          var fields = [
+            { input: $("in-class"), err: $("err-class"), key: "className" },
+            { input: $("in-id"), err: $("err-id"), key: "studentId" },
+            { input: $("in-name"), err: $("err-name"), key: "name" }
+          ];
+          var ok = true, firstBad = null;
+          fields.forEach(function (f) {
+            var v = f.input.value.trim();
+            state[f.key] = v;
+            var bad = v === "";
+            f.input.classList.toggle("invalid", bad);
+            f.err.classList.toggle("show", bad);
+            if (bad) { ok = false; if (!firstBad) firstBad = f.input; }
+          });
+          if (!ok) { firstBad.focus(); return; }
+
+          state.code = makeCode();
+          state.scenario = SCENARIOS[Math.floor(Math.random() * SCENARIOS.length)];
+          state.stance = Math.random() < 0.5 ? "pro" : "con";
+
+          $("hw-identity").innerHTML = "";
+          var spans = [
+            ["班級", state.className], ["學號", state.studentId], ["姓名", state.name]
+          ];
+          spans.forEach(function (pair) {
+            var s = document.createElement("span");
+            s.textContent = pair[0] + "：";
+            var b = document.createElement("b");
+            b.textContent = pair[1];
+            s.appendChild(b);
+            $("hw-identity").appendChild(s);
+          });
+          $("hw-code").textContent = state.code;
+          $("hw-scenario-title").textContent = "情境 " + state.scenario.n + "：" + state.scenario.title;
+          $("hw-scenario-body").textContent = state.scenario.body;
+          $("hw-stance-name").textContent = state.stance === "pro" ? "你的立場：正方" : "你的立場：反方";
+          $("hw-stance-text").textContent = state.scenario[state.stance];
+          show("step-handwriting");
+        });
+
+        /* ---------- 步驟二 → 三 ---------- */
+        $("btn-to-exam").addEventListener("click", function () {
+          buildExam();
+          show("step-exam");
+        });
+
+        function buildExam() {
+          var picked = shuffle(QUESTIONS).slice(0, TOTAL);
+          state.exam = picked.map(function (q) {
+            if (q.type === "matching") {
+              return { id: q.id, chapter: q.chapter, type: "matching", question: q.question, lefts: q.lefts.slice(), rights: shuffle(q.rights) };
+            }
+            return { id: q.id, chapter: q.chapter, type: "choice", question: q.question, options: shuffle(q.options) };
+          });
+          state.answers = {};
+          var host = $("questions");
+          host.innerHTML = "";
+          state.exam.forEach(function (q, idx) {
+            host.appendChild(q.type === "matching" ? renderMatching(q, idx) : renderChoice(q, idx));
+          });
+          updateProgress();
+        }
+
+        var ICON_CHOICE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="6" r="1.6"/><circle cx="5" cy="12" r="1.6"/><circle cx="5" cy="18" r="1.6"/><path d="M10.5 6h9M10.5 12h9M10.5 18h9"/></svg>';
+        var ICON_MATCH = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="m15 15 6 6"/><path d="M4 4l5 5"/></svg>';
+
+        function cardShell(q, idx, typeLabel) {
+          var card = document.createElement("div");
+          card.className = "q-card";
+          var meta = document.createElement("div");
+          meta.className = "q-meta";
+          var num = document.createElement("span");
+          num.className = "q-num";
+          num.textContent = "第 " + (idx + 1) + " 題";
+          var right = document.createElement("span");
+          right.className = "q-meta-right";
+          if (q.chapter) {
+            var ch = document.createElement("span");
+            ch.className = "q-chapter";
+            ch.textContent = q.chapter;
+            right.appendChild(ch);
+          }
+          var tag = document.createElement("span");
+          tag.className = "q-type";
+          tag.innerHTML = (q.type === "matching" ? ICON_MATCH : ICON_CHOICE) + "<span>" + typeLabel + "</span>";
+          right.appendChild(tag);
+          meta.appendChild(num); meta.appendChild(right);
+          var text = document.createElement("p");
+          text.className = "q-text";
+          text.textContent = q.question;
+          card.appendChild(meta); card.appendChild(text);
+          return card;
+        }
+
+        function renderChoice(q, idx) {
+          var card = cardShell(q, idx, "選擇題 · 4 分");
+          var fs = document.createElement("fieldset");
+          var legend = document.createElement("legend");
+          legend.textContent = q.question;
+          legend.style.position = "absolute";
+          legend.style.left = "-9999px";
+          fs.appendChild(legend);
+          q.options.forEach(function (opt, oi) {
+            var label = document.createElement("label");
+            label.className = "opt";
+            var radio = document.createElement("input");
+            radio.type = "radio";
+            radio.name = "q-" + q.id;
+            radio.value = opt;
+            radio.addEventListener("change", function () {
+              state.answers[q.id] = opt;
+              updateProgress();
+            });
+            var letter = document.createElement("span");
+            letter.className = "opt-letter";
+            letter.setAttribute("aria-hidden", "true");
+            letter.textContent = "ABCDEFGH".charAt(oi);
+            var span = document.createElement("span");
+            span.textContent = opt;
+            label.appendChild(radio); label.appendChild(letter); label.appendChild(span);
+            fs.appendChild(label);
+          });
+          card.appendChild(fs);
+          return card;
+        }
+
+        function renderMatching(q, idx) {
+          var card = cardShell(q, idx, "連連看 · 4 分");
+          var wrap = document.createElement("div");
+          q.lefts.forEach(function (left) {
+            var row = document.createElement("div");
+            row.className = "match-row";
+            var lab = document.createElement("label");
+            lab.className = "m-left";
+            lab.textContent = left;
+            var sel = document.createElement("select");
+            sel.setAttribute("aria-label", left + " 的配對");
+            var ph = document.createElement("option");
+            ph.value = "";
+            ph.textContent = "請選擇配對…";
+            sel.appendChild(ph);
+            q.rights.forEach(function (r) {
+              var o = document.createElement("option");
+              o.value = r;
+              o.textContent = r;
+              sel.appendChild(o);
+            });
+            sel.addEventListener("change", function () {
+              if (!state.answers[q.id]) state.answers[q.id] = {};
+              state.answers[q.id][left] = sel.value;
+              sel.classList.toggle("filled", sel.value !== "");
+              updateProgress();
+            });
+            lab.appendChild(sel);
+            row.appendChild(lab);
+            wrap.appendChild(row);
+          });
+          card.appendChild(wrap);
+          return card;
+        }
+
+        function isAnswered(q) {
+          var a = state.answers[q.id];
+          if (q.type === "choice") return typeof a === "string" && a !== "";
+          if (!a) return false;
+          return q.lefts.every(function (l) { return a[l]; });
+        }
+        function updateProgress() {
+          var done = state.exam.filter(isAnswered).length;
+          $("progress-count").textContent = done + " / " + TOTAL;
+          $("progress-fill").style.width = (done / TOTAL * 100) + "%";
+          return done;
+        }
+
+        /* ---------- 送出 ---------- */
+        $("btn-submit").addEventListener("click", function () {
+          var done = updateProgress();
+          var msg;
+          if (done === TOTAL) {
+            msg = "你已完成全部 " + TOTAL + " 題。";
+          } else {
+            msg = "你已作答 " + done + " / " + TOTAL + " 題，尚有 " + (TOTAL - done) + " 題未完成，未作答的題目將不計分。";
+          }
+          $("confirm-detail").textContent = msg;
+          $("confirm-modal").hidden = false;
+        });
+        $("btn-confirm-back").addEventListener("click", function () {
+          $("confirm-modal").hidden = true;
+        });
+        $("btn-confirm-send").addEventListener("click", function () {
+          $("confirm-modal").hidden = true;
+          send();
+        });
+        $("btn-retry").addEventListener("click", function () {
+          show("step-exam");
+          send();
+        });
+
+        function buildPayload() {
+          var answers = state.exam.map(function (q) {
+            var a = state.answers[q.id];
+            if (q.type === "matching") {
+              var obj = {};
+              q.lefts.forEach(function (l) { obj[l] = (a && a[l]) ? a[l] : ""; });
+              return { id: q.id, answer: obj };
+            }
+            return { id: q.id, answer: (typeof a === "string") ? a : "" };
+          });
+          return {
+            className: state.className,
+            studentId: state.studentId,
+            name: state.name,
+            code: state.code,
+            hwScenario: String(state.scenario.n),
+            hwStance: state.stance === "pro" ? "正方" : "反方",
+            answers: answers
+          };
+        }
+
+        function send() {
+          if (state.sending || state.submitted) return;
+          state.sending = true;
+          var btn = $("btn-submit");
+          btn.disabled = true;
+          btn.textContent = "送出中，請稍候…";
+          fetch(GAS_URL, {
+            method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify(buildPayload())
+          }).then(function (res) {
+            return res.json();
+          }).then(function (data) {
+            state.sending = false;
+            btn.disabled = false;
+            btn.textContent = "送出答案";
+            if (data && data.ok) {
+              state.submitted = true;
+              show("step-done");
+            } else if (data && data.error === "already_submitted") {
+              state.submitted = true;
+              show("step-duplicate");
+            } else {
+              show("step-error");
+            }
+          }).catch(function () {
+            state.sending = false;
+            btn.disabled = false;
+            btn.textContent = "送出答案";
+            show("step-error");
+          });
+        }
+
+        window.addEventListener("beforeunload", function (e) {
+          if (!state.submitted && !$("step-exam").hidden) {
+            e.preventDefault();
+            e.returnValue = "";
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>
